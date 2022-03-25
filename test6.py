@@ -2,6 +2,8 @@ import openpyxl as px
 import re
 import glob
 
+# ====== (1) ファイル名から情報を抜き出す ======
+
 # フォルダ内にあるファイル名を取得
 files = glob.glob("*交通費請求明細*.xlsx")
 for file in files:
@@ -44,13 +46,29 @@ ws.cell(row=2, column=1, value=date)
 ws.cell(row=2, column=2, value=employee_num)
 ws.cell(row=2, column=3, value=employee_name)
 
-# （19,1)
+
+# ====== (2) ファイル内の情報を他ファイルへコピーする ======
+
+# （19,1) 月日をコピー
 cell_value = exl_1ws.cell(row=19, column=1).value
 ws.cell(row=2, column=4, value=cell_value)
 
-# （19,3）から（19,9）まで
-for i in range(3, 11):
+# （19,3）From→toをコピー
+cell_value = exl_1ws.cell(row=19, column=3).value
+ws.cell(row=2, column=5, value=cell_value)
+
+# (19,4) 事由をコピー（結合セル）
+cell_value = exl_1ws.cell(row=19, column=4).value
+ws.cell(row=2, column=6, value=cell_value)
+
+# （19,6）から（19,9）までコピー
+for i in range(6,10):
     cell_value = exl_1ws.cell(row=19, column=i).value
-    ws.cell(row=2, column=i + 2, value=cell_value)
+    ws.cell(row=2, column=i + 1, value=cell_value)
+
+# (19,10) 金額をコピー（結合セル）
+cell_value = exl_1ws.cell(row=19, column=10).value
+ws.cell(row=2, column=11, value=cell_value)
+
 
 wb.save('YYYY年MM月度_交通費一覧.xlsx')
